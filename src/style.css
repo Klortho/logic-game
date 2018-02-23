@@ -1,12 +1,1 @@
-svg { background: #E8E8E8; }
-
-.notGate {
-  stroke: red;
-  stroke-width: 2;
-  fill: none;
-}
-.wire {
-  stroke: blue;
-  stroke-width: 2;
-  fill: none;
-}
+svg {background: #E8E8E8}
