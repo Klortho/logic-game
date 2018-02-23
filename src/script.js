@@ -20,6 +20,11 @@ drawing.circle = function(attrs) {
   this.elem.appendChild(shape.elem);
   return shape;
 };
+drawing.path = function(attrs) {
+  const shape = new SvgElement('path', attrs);
+  this.elem.appendChild(shape.elem);
+  return shape;
+};                                                       // #/path-method
 drawing.polygon = function(attrs) {
   const shape = new SvgElement('polygon', attrs);
   var pointsStr = '';
@@ -37,11 +42,6 @@ drawing.polyline = function(attrs) {
     pointsStr += point[0] + ',' + point[1] + ' ';
   }
   attrs.points = pointsStr;
-  this.elem.appendChild(shape.elem);
-  return shape;
-};
-drawing.path = function(attrs) {
-  const shape = new SvgElement('path', attrs);
   this.elem.appendChild(shape.elem);
   return shape;
 };
@@ -110,11 +110,11 @@ class OrGate {
 
     drawing.path({
       d: 'M ' + (x - 47.5) + ',' + (y - 30) + ' ' +
-                'h 32.5 ' +
-                'c 25,0 43,20 47.5,30 ' +
-                'c -4.5,10 -22.5,30 -47.5,30 ' +
-                'h -32.5 ' +
-                'a 60 60 0 0 0 0 -60',
+         'h 32.5 ' +
+         'c 25,0 43,20 47.5,30 ' +
+         'c -4.5,10 -22.5,30 -47.5,30 ' +
+         'h -32.5 ' +
+         'a 60 60 0 0 0 0 -60',
       fill: 'none',
       stroke: 'orange',
       'stroke-width': 3,
