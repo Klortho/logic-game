@@ -54,12 +54,18 @@ function extractSection(srcLines, hash) {
         const bracket = line.match(/\(|\{/)[0];
         acc.matcher = bracketMatcher[bracket];
         acc.bracketCount = acc.matcher.summer(line);
+        acc.parenCount = bracketMatcher['('].summer(line);
+        acc.curlyCount = bracketMatcher['{'].summer(line);
       }
     }
     else if (acc.state === 1) {
       acc.lines.push(line);
       acc.bracketCount += acc.matcher.summer(line);
-      if (acc.bracketCount === 0) {
+      acc.parenCount += bracketMatcher['('].summer(line);
+      acc.curlyCount += bracketMatcher['{'].summer(line);
+      if (acc.bracketCount === 0 && acc.parenCount === 0 &&
+          acc.curlyCount === 0)
+      {
         acc.state = 2;
         acc.lines.push('```');
       }
