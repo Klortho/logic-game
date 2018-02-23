@@ -4,9 +4,6 @@ const path = require('path');
 
 
 const packageDir = fs.readdirSync('.');
-for (let f of packageDir) {
-  console.log('file: ' + f);
-}
 
 function fileLines(pathname) {
   return new Promise((resolve, reject) => {
@@ -33,7 +30,7 @@ const brackets = {
 class BracketMatcher {
   constructor(open) {
     this.open = open;
-    this.close = bracket[openBracket];
+    this.close = brackets[open];
     this.openCounter = charCounter(this.open);
     this.closeCounter = charCounter(this.close);
   }
@@ -43,37 +40,38 @@ class BracketMatcher {
 }
 const bracketMatcher = {
   '(': new BracketMatcher('('),
-  '}': new BracketMatcher('{'),
+  '{': new BracketMatcher('{'),
 };
 
 
 
 function extractSection(srcLines, hash) {
-  return srcLines.reduce((acc, line) => {
+  const agg = srcLines.reduce((acc, line) => {
     if (acc.state === 0) {
       if (line.trim().startsWith(hash)) {
+        acc.state = 1;
+        acc.lines = ['```javascript', line];
         const bracket = line.match(/\(|\{/)[0];
-        const matcher = bracketMatcher[bracket];
-        return {
-          state: 1,
-          lines: [line],
-          matcher,
-          bracketCount: matcher(line),
-        };
+        acc.matcher = bracketMatcher[bracket];
+        acc.bracketCount = acc.matcher.summer(line);
       }
-      else return acc;
     }
     else if (acc.state === 1) {
-      return acc;
+      acc.lines.push(line);
+      acc.bracketCount += acc.matcher.summer(line);
+      if (acc.bracketCount === 0) {
+        acc.state = 2;
+        acc.lines.push('```');
+      }
     }
-  }, {state: 0});
+    return acc;
+  }, {state: 0, lines: ['*** ERROR: no source section found for ' + hash + '! ***']});
+  return agg.lines;
 }
 
 packageDir.filter(f => f.startsWith('lesson-')).forEach(lessonDir => {
   fileLines(path.join(lessonDir, '_README.md'))
   .then(readmeLines => {
-    console.log('lines: ' + readmeLines.length);
-    console.log('first: ' + readmeLines[0]);
 
     // first pass: scan the readme for all the needed source file names
     const sourceFiles = readmeLines.filter(line => line.startsWith('>>>'))
@@ -82,7 +80,6 @@ packageDir.filter(f => f.startsWith('lesson-')).forEach(lessonDir => {
       acc[src] = 1;
       return acc;
     }, {});
-    console.log('source files: ', sourceFiles);
 
     // second pass: read the source files
     return Promise.all(
@@ -96,7 +93,10 @@ packageDir.filter(f => f.startsWith('lesson-')).forEach(lessonDir => {
         )
     )
     .then(sourceFilesLines => {
-      console.log('sourceFilesLines: ', sourceFilesLines);
+      const linesForFile = sourceFilesLines.reduce((acc, cur) => {
+        acc[cur.filename] = cur.lines;
+        return acc;
+      }, {});
 
       // third pass: write the output
       const out = fs.createWriteStream(path.join(lessonDir, 'README.md'));
@@ -106,7 +106,8 @@ packageDir.filter(f => f.startsWith('lesson-')).forEach(lessonDir => {
         }
         else {
           const [srcFile, hash] = readmeLine.slice(3).split('#');
-          out.write(extractSection(sourceFilesLines[srcFile], hash).join('\n') + '\n');
+          const srcLines = linesForFile[srcFile];
+          out.write(extractSection(srcLines, hash).join('\n') + '\n');
         }
       });
       out.end();
