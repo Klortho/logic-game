@@ -1,12 +1,11 @@
-# Logic Game
+# Lesson 4 - Create our own SVG library
 
 
-## Lesson 3 - Or Gate
+In this lesson, we'll get rid of SVG.js. Instead of using that library,
+we'll create our own class, called
+`SvgElement`, that will make drawing SVG objects easy.
 
-## Lesson 4 - SVG functions
-
-In this lesson, we'll get rid of SVG.js. We'll create our own class, called
-`SvgElement`, to make drawing SVG objects easy:
+The `SvgElement` class will look like this:
 
 >>>src/script.js#class SvgElement
 
