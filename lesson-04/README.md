@@ -4,6 +4,17 @@ In this lesson, we'll get rid of SVG.js. Instead of using that library, we'll
 create our own class, called `SvgElement`, that will make drawing SVG objects
 easy.
 
+First, take the `<script>` element out of your index.html file. It tells the
+browser to load the SVG.js library, and we won't be needing that anymore. It
+looks like this:
+
+```html
+<script src='https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.4/svg.min.js'></script>
+```
+
+Just delete that line. After it's gone, the program won't work anymore, until
+we get our new code up and running.
+
 The `SvgElement` class will look like this:
 
 ```javascript
@@ -91,3 +102,8 @@ The `polyline` method is almost identical!
 The final thing we need to do in this lesson is to convert all of the SVG.js
 `draw` method calls into our new `drawing` method calls. You have already seen
 an example above (`drawing.circle`). The others are left as an exercise!
+
+When you're finished, the result should look the same as it did when we
+finished lesson 3:
+
+![Result after Lesson 4](./result.svg)
