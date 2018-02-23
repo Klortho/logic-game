@@ -45,12 +45,10 @@ drawing.polyline = function(attrs) {
   this.elem.appendChild(shape.elem);
   return shape;
 };
-
 document.body.appendChild(drawing.elem);
 
-
 class NotGate {
-  constructor(x, y){
+  constructor(x, y) {
     this.x = x;
     this.y = y;
     this.circle = drawing.circle({
@@ -71,13 +69,13 @@ class NotGate {
   outputPos() {
     return [this.x + 28, this.y];
   }
-  inputPos(){
+  inputPos() {
     return [this.x - 28, this.y];
   }
 }
 
 class AndGate {
-  constructor(x, y){
+  constructor(x, y) {
     this.x = x;
     this.y = y;
 
@@ -104,7 +102,7 @@ class AndGate {
 }
 
 class OrGate {
-  constructor(x, y){
+  constructor(x, y) {
     this.x = x;
     this.y = y;
 
@@ -138,7 +136,7 @@ class Wire {
     var start = fromGate.outputPos();
     var end = toGate.inputPos(inputNum);
     var points = [start];
-    if(start[1] != end[1]){
+    if(start[1] != end[1]) {
       points.push([(start[0] + end[0]) / 2, start[1]]);
       points.push([(start[0] + end[0]) / 2, end[1]]);
     }
@@ -152,11 +150,11 @@ class Wire {
   }
 }
 
-var notGate0 = new NotGate(100,100);
-var notGate1 = new NotGate(200,150);
-var notGate2 = new NotGate(500,150);
-var andGate = new AndGate(300,300);
-var orGate = new OrGate(300,100);
+var notGate0 = new NotGate(100, 100);
+var notGate1 = new NotGate(200, 150);
+var notGate2 = new NotGate(500, 150);
+var andGate = new AndGate(300, 300);
+var orGate = new OrGate(300, 100);
 const wire0 = new Wire(notGate0, orGate, 0);
 const wire1 = new Wire(notGate1, andGate, 0);
 const wire2 = new Wire(orGate, notGate2);

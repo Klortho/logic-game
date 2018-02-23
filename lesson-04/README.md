@@ -1,8 +1,8 @@
 # Lesson 4 - Create our own SVG library
 
-In this lesson, we'll get rid of SVG.js. Instead of using that library,
-we'll create our own class, called
-`SvgElement`, that will make drawing SVG objects easy.
+In this lesson, we'll get rid of SVG.js. Instead of using that library, we'll
+create our own class, called `SvgElement`, that will make drawing SVG objects
+easy.
 
 The `SvgElement` class will look like this:
 
@@ -17,9 +17,9 @@ class SvgElement {
 }
 ```
 
-Next, we'll create an instance of this class, called `drawing`, which will
-be the main `<svg>` element itself. This will take the place of the old
-SVG.js `draw` object.
+Next, we'll create an instance of this class, called `drawing`, which will be
+the main `<svg>` element itself. This will take the place of the old SVG.js
+`draw` object.
 
 ```javascript
 const drawing = new SvgElement('svg', {
@@ -28,8 +28,8 @@ const drawing = new SvgElement('svg', {
 });
 ```
 
-Next, for each of the types of shapes that we need, we'll add a method to
-the `drawing` object that will create the shape, and add it to the drawing.
+Next, for each of the types of shapes that we need, we'll add a method to the
+`drawing` object that will create the shape, and add it to the drawing.
 
 For example, the `circle` method is defined like this:
 
@@ -41,9 +41,8 @@ drawing.circle = function(attrs) {
 };
 ```
 
-When we create the circle in the `NotGate` constructor, we'll call this
-method, and pass it the SVG attributes that control what the circle looks
-like:
+When we create the circle in the `NotGate` constructor, we'll call this method,
+and pass it the SVG attributes that control what the circle looks like:
 
 ```javascript
 this.circle = drawing.circle({
@@ -67,12 +66,12 @@ drawing.path = function(attrs) {
 };                                                       // #/path-method
 ```
 
-The other two types of shapes that we use are `polygon` and `polyline`.
-One of the nice features of the SVG.js library is that it allows us to
-create these shapes using arrays of points. But the SVG elements require
-these points to be inside Strings. So, when we create the `drawing` methods
-for these two, we'll add a little bit of code to convert the arrays of
-points into strings. The `polygon` method looks like this:
+The other two types of shapes that we use are `polygon` and `polyline`. One of
+the nice features of the SVG.js library is that it allows us to create these
+shapes using arrays of points. But the SVG elements require these points to be
+inside Strings. So, when we create the `drawing` methods for these two, we'll
+add a little bit of code to convert the arrays of points into strings. The
+`polygon` method looks like this:
 
 ```javascript
 drawing.polygon = function(attrs) {
@@ -89,7 +88,6 @@ drawing.polygon = function(attrs) {
 
 The `polyline` method is almost identical!
 
-The final thing we need to do in this lesson is to convert all of the
-SVG.js `draw` method calls into our new `drawing` method calls. You have
-already seen an example above (`drawing.circle`). The others are left as
-an exercise!
+The final thing we need to do in this lesson is to convert all of the SVG.js
+`draw` method calls into our new `drawing` method calls. You have already seen
+an example above (`drawing.circle`). The others are left as an exercise!
