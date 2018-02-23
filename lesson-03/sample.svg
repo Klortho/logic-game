@@ -1,8 +1,16 @@
 <svg version="1.1"
      baseProfile="full"
-     width="300" height="200"
+     width="1840" height="500"
      xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="red" />
-  <circle cx="150" cy="100" r="80" fill="green" />
-  <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
+  <circle r="6" cx="122" cy="100" fill="none" stroke="red" stroke-width="3"/>
+  <polygon points="116,100,72,130,72,70" fill="none" stroke="red" stroke-width="3"/>
+  <circle r="6" cx="222" cy="150" fill="none" stroke="red" stroke-width="3"/>
+  <polygon points="216,150,172,180,172,120" fill="none" stroke="red" stroke-width="3"/>
+  <circle r="6" cx="522" cy="150" fill="none" stroke="red" stroke-width="3"/>
+  <polygon points="516,150,472,180,472,120" fill="none" stroke="red" stroke-width="3"/>
+  <path d="M 298,270 h -26 v 60 h 26 a 30 30 0 0 0 0 -60" fill="none" stroke="green" stroke-width="3"/>
+  <path d="M 252.5,70 h 32.5 c 25,0 43,20 47.5,30 c -4.5,10 -22.5,30 -47.5,30 h -32.5 a 60 60 0 0 0 0 -60" fill="none" stroke="orange" stroke-width="3"/>
+  <polyline points="128,100,193,100,193,85,258,85" fill="none" stroke="blue" stroke-width="2"/>
+  <polyline points="228,150,250,150,250,285,272,285" fill="none" stroke="blue" stroke-width="2"/>
+  <polyline points="332.5,100,402.25,100,402.25,150,472,150" fill="none" stroke="blue" stroke-width="2"/>
 </svg>
