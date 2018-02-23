@@ -2,18 +2,71 @@ function log(msg) {
   document.getElementById('log').textContent += msg + '\n';
 }
 
-var draw = SVG('drawing').size(1840, 500);
+class SvgElement {
+  constructor(tag, attrs) {
+    this.elem = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (let name in attrs) {
+      this.elem.setAttribute(name, attrs[name]);
+    }
+  }
+}
+
+const drawing = new SvgElement('svg', {
+  width: 1840,
+  height: 500,
+});
+drawing.circle = function(attrs) {
+  const shape = new SvgElement('circle', attrs);
+  this.elem.appendChild(shape.elem);
+  return shape;
+};
+drawing.polygon = function(attrs) {
+  const shape = new SvgElement('polygon', attrs);
+  var pointsStr = '';
+  for (let point of attrs.points) {
+    pointsStr += point[0] + ',' + point[1] + ' ';
+  }
+  attrs.points = pointsStr;
+  this.elem.appendChild(shape.elem);
+  return shape;
+};
+drawing.polyline = function(attrs) {
+  const shape = new SvgElement('polyline', attrs);
+  var pointsStr = '';
+  for (let point of attrs.points) {
+    pointsStr += point[0] + ',' + point[1] + ' ';
+  }
+  attrs.points = pointsStr;
+  this.elem.appendChild(shape.elem);
+  return shape;
+};
+drawing.path = function(attrs) {
+  const shape = new SvgElement('path', attrs);
+  this.elem.appendChild(shape.elem);
+  return shape;
+};
+
+document.body.appendChild(drawing.elem);
+
 
 class NotGate {
   constructor(x, y){
     this.x = x;
     this.y = y;
-    this.circle = draw.circle(12).fill('none')
-      .attr({'stroke-width': 3, stroke: 'red'})
-      .move(x + 16, y - 6);
-
-    this.polygon = draw.polygon([[x + 16, y], [x - 28, y + 30], [x - 28, y - 30]])
-      .attr({fill: 'none', 'stroke-width': 3, stroke: 'red'});
+    this.circle = drawing.circle({
+      r: 6,
+      cx: x + 22,
+      cy: y,
+      fill: 'none',
+      stroke: 'red',
+      'stroke-width': 3,
+    });
+    this.polygon = drawing.polygon({
+      points: [[x + 16, y], [x - 28, y + 30], [x - 28, y - 30]],
+      fill: 'none',
+      stroke: 'red',
+      'stroke-width': 3,
+    });
   }
   outputPos() {
     return [this.x + 28, this.y];
@@ -28,14 +81,16 @@ class AndGate {
     this.x = x;
     this.y = y;
 
-    const svg = document.getElementsByTagName('svg')[0];
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M ' + (x - 2) + ',' + (y - 30) +
-                      ' h -26 v 60 h 26 a 30 30 0 0 0 0 -60');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'green');
-    path.setAttribute('stroke-width', 3);
-    svg.appendChild(path);
+    drawing.path({
+      d: 'M ' + (x - 2) + ',' + (y - 30) + ' ' +
+         'h -26 ' +
+         'v 60 ' +
+         'h 26 ' +
+         'a 30 30 0 0 0 0 -60',
+      fill: 'none',
+      stroke: 'green',
+      'stroke-width': 3,
+    });
   }
   outputPos() {
     return [this.x + 28, this.y];
@@ -53,19 +108,17 @@ class OrGate {
     this.x = x;
     this.y = y;
 
-    const svg = document.getElementsByTagName('svg')[0];
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const d = 'M ' + (x - 47.5) + ',' + (y - 30) + ' ' +
-              'h 32.5 ' +
-              'c 25,0 43,20 47.5,30 ' +
-              'c -4.5,10 -22.5,30 -47.5,30 ' +
-              'h -32.5 ' +
-              'a 60 60 0 0 0 0 -60';
-    path.setAttribute('d', d);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'orange');
-    path.setAttribute('stroke-width', 3);
-    svg.appendChild(path);
+    drawing.path({
+      d: 'M ' + (x - 47.5) + ',' + (y - 30) + ' ' +
+                'h 32.5 ' +
+                'c 25,0 43,20 47.5,30 ' +
+                'c -4.5,10 -22.5,30 -47.5,30 ' +
+                'h -32.5 ' +
+                'a 60 60 0 0 0 0 -60',
+      fill: 'none',
+      stroke: 'orange',
+      'stroke-width': 3,
+    });
   }
   outputPos() {
     return [this.x + 32.5, this.y];
@@ -90,8 +143,12 @@ class Wire {
       points.push([(start[0] + end[0]) / 2, end[1]]);
     }
     points.push(end);
-    this.wire = draw.polyline(points)
-    .attr({stroke: 'blue', 'stroke-width': 2, fill: 'none'});
+    this.wire = drawing.polyline({
+      points: points,
+      fill: 'none',
+      stroke: 'blue',
+      'stroke-width': 2,
+    });
   }
 }
 
