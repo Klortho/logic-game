@@ -56,3 +56,8 @@ The `polyline` method is almost identical!
 The final thing we need to do in this lesson is to convert all of the SVG.js
 `draw` method calls into our new `drawing` method calls. You have already seen
 an example above (`drawing.circle`). The others are left as an exercise!
+
+When you're finished, the result should look the same as it did when we
+finished lesson 3:
+
+![Result after Lesson 4](./result.svg)
