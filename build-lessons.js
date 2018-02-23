@@ -21,22 +21,31 @@ function fileLines(pathname) {
   });
 }
 
-const closeBracket = {
+
+const charCounter = char => text => {
+  const matches = text.match(new RegExp('\\' + char, 'g'));
+  return matches === null ? 0 : matches.length;
+};
+const brackets = {
   '(': ')',
   '{': '}',
 };
-const charMatcher = char => new RegExp('\\' + char, 'g');
-const charCounter = char => line => {
-  const matches = line.match(charMatcher(char));
-  return matches ? matches.length : 0;
+class BracketMatcher {
+  constructor(open) {
+    this.open = open;
+    this.close = bracket[openBracket];
+    this.openCounter = charCounter(this.open);
+    this.closeCounter = charCounter(this.close);
+  }
+  summer(text) {
+    return this.openCounter(text) - this.closeCounter(text);
+  }
+}
+const bracketMatcher = {
+  '(': new BracketMatcher('('),
+  '}': new BracketMatcher('{'),
 };
-const bracketAdder = bracket => {
-  const openCounter = charCounter(bracket);
-  const closeCounter = charCounter(closeBracket[bracket]);
-  return line => openCounter(line) - closeCounter(line);
-};
-const parenAdder = bracketAdder('(');
-const curlyAdder = bracketAdder('{');
+
 
 
 function extractSection(srcLines, hash) {
@@ -44,12 +53,12 @@ function extractSection(srcLines, hash) {
     if (acc.state === 0) {
       if (line.trim().startsWith(hash)) {
         const bracket = line.match(/\(|\{/)[0];
-        const adder = bracket === '(' ? parenAdder : curlyAdder;
+        const matcher = bracketMatcher[bracket];
         return {
           state: 1,
           lines: [line],
-          adder: adder,
-          bracketCount: adder(line),
+          matcher,
+          bracketCount: matcher(line),
         };
       }
       else return acc;
