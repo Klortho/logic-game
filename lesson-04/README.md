@@ -1,5 +1,9 @@
 # Lesson 4 - Create our own SVG library
 
+
+FIXME: Convert this so that it doesnt use svg.js from the get-go
+FIXME: add `document.body.appendChild(drawing.elem);`
+
 In this lesson, we'll get rid of SVG.js. Instead of using that library, we'll
 create our own class, called `SvgElement`, that will make drawing SVG objects
 easy.
@@ -76,6 +80,9 @@ drawing.path = function(attrs) {
   return shape;
 };                                                       // #/path-method
 ```
+
+
+FIXME: This next part is not needed!!
 
 The other two types of shapes that we use are `polygon` and `polyline`. One of
 the nice features of the SVG.js library is that it allows us to create these

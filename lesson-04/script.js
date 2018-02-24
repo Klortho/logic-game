@@ -24,24 +24,14 @@ drawing.path = function(attrs) {
   const shape = new SvgElement('path', attrs);
   this.elem.appendChild(shape.elem);
   return shape;
-};                                                       // #/path-method
+};
 drawing.polygon = function(attrs) {
   const shape = new SvgElement('polygon', attrs);
-  var pointsStr = '';
-  for (let point of attrs.points) {
-    pointsStr += point[0] + ',' + point[1] + ' ';
-  }
-  attrs.points = pointsStr;
   this.elem.appendChild(shape.elem);
   return shape;
 };
 drawing.polyline = function(attrs) {
   const shape = new SvgElement('polyline', attrs);
-  var pointsStr = '';
-  for (let point of attrs.points) {
-    pointsStr += point[0] + ',' + point[1] + ' ';
-  }
-  attrs.points = pointsStr;
   this.elem.appendChild(shape.elem);
   return shape;
 };
