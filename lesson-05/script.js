@@ -2,6 +2,7 @@ try {
   function log(msg) {
     document.getElementById('log').textContent += msg + '\n';
   }
+  var nextGateId = 0;
 
   class SvgElement {
     constructor(tag, attrs) {
@@ -49,16 +50,16 @@ try {
   }
 
   class Svg extends SvgContainer {
-    constructor(attrs) {
+    constructor(parent, attrs) {
       super('svg', attrs);
+      parent.appendChild(this.elem);
     }
   }
 
-  const drawing = new Svg({
+  const drawing = new Svg(document.body, {
     width: 1840,
     height: 500,
   });
-  document.body.appendChild(drawing.elem);
 
   const directions = {
     right: 0,
@@ -69,27 +70,42 @@ try {
   function rad(deg) {
     return Math.PI * deg / 180;
   }
-  function offsetX(angle, dx, dy) {
-    return Math.cos(rad(angle)) * dx +
-           Math.sin(rad(angle)) * dy;
-  }
-  function offsetY(angle, dx, dy) {
-    return Math.sin(rad(angle)) * dx +
-           Math.cos(rad(angle)) * dy;
-  }
 
-
-
-  class NotGate {
+  class Gate {
     constructor(x, y, direction) {
+      this.id = nextGateId++;
       this.x = x;
       this.y = y;
-      this.angle = directions[direction];
+      this.direction = direction;
       this.g = drawing.g({
         transform: 'translate(' + x + ', ' + y + ') ' +
-          'rotate(' + this.angle + ')',
+          'rotate(' + directions[direction] + ')',
       });
-      this.circle = this.g.circle({
+    }
+    relativeX(dx, dy) {
+      const angle = directions[this.direction];
+      return Math.cos(rad(angle)) * dx +
+             Math.sin(rad(angle)) * dy;
+    }
+    relativeY(dx, dy) {
+      const angle = directions[this.direction];
+      return Math.sin(rad(angle)) * dx +
+             Math.cos(rad(angle)) * dy;
+    }
+    relativePos(dx, dy) {
+      return [this.relativeX(dx, dy), this.relativeY(dx, dy)];
+    }
+    absolutePos(dx, dy) {
+      const relPos = this.relativePos(dx, dy);
+      return [this.x + relPos[0], this.y + relPos[1]];
+    }
+  }
+
+
+  class NotGate extends Gate {
+    constructor(x, y, direction='right') {
+      super(x, y, direction);
+      this.g.circle({
         r: 6,
         cx: 22,
         cy: 0,
@@ -97,7 +113,7 @@ try {
         stroke: 'red',
         'stroke-width': 3,
       });
-      this.polygon = this.g.polygon({
+      this.g.polygon({
         points: [[16, 0], [-28, 30], [-28, -30]],
         fill: 'none',
         stroke: 'red',
@@ -105,22 +121,18 @@ try {
       });
     }
     outputPos() {
-      return [this.x + offsetX(this.angle, 28, 0),
-              this.y + offsetY(this.angle, 28, 0)];
+      return this.absolutePos(28, 0);
     }
     inputPos() {
-      return [this.x + offsetX(this.angle, -28, 0),
-              this.y + offsetY(this.angle, -28, 0)];
+      return this.absolutePos(-28, 0);
     }
   }
 
-  class AndGate {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-
-      drawing.path({
-        d: 'M ' + (x - 2) + ',' + (y - 30) + ' ' +
+  class AndGate extends Gate {
+    constructor(x, y, direction='right') {
+      super(x, y, direction);
+      this.g.path({
+        d: 'M -2,-30 ' +
            'h -26 ' +
            'v 60 ' +
            'h 26 ' +
@@ -131,23 +143,21 @@ try {
       });
     }
     outputPos() {
-      return [this.x + 28, this.y];
+      return this.absolutePos(28, 0);
     }
     inputPos(inputNum) {
-      var y;
-      if (inputNum === 0) y = this.y - 15;
-      else y = this.y + 15;
-      return [this.x - 28, y];
+      var dy;
+      if (inputNum === 0) dy = -15;
+      else dy = 15;
+      return this.absolutePos(-28, dy);
     }
   }
 
-  class OrGate {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-
-      drawing.path({
-        d: 'M ' + (x - 47.5) + ',' + (y - 30) + ' ' +
+  class OrGate extends Gate {
+    constructor(x, y, direction='right') {
+      super(x, y, direction);
+      this.g.path({
+        d: 'M -47.5,-30 ' +
            'h 32.5 ' +
            'c 25,0 43,20 47.5,30 ' +
            'c -4.5,10 -22.5,30 -47.5,30 ' +
@@ -159,13 +169,13 @@ try {
       });
     }
     outputPos() {
-      return [this.x + 32.5, this.y];
+      return this.absolutePos(32.5, 0);
     }
     inputPos(inputNum) {
-      var y;
-      if (inputNum === 0) y = this.y - 15;
-      else y = this.y + 15;
-      return [this.x - 42, y];
+      var dy;
+      if (inputNum === 0) dy = -15;
+      else dy = 15;
+      return this.absolutePos(-42, dy);
     }
   }
 
@@ -190,14 +200,14 @@ try {
     }
   }
 
-  var notGate0 = new NotGate(100, 100, 'right');
+  var notGate0 = new NotGate(100, 100);
   var notGate1 = new NotGate(200, 150, 'down');
   var notGate2 = new NotGate(500, 150, 'left');
-  var andGate = new AndGate(300, 300);
-  var orGate = new OrGate(300, 100);
-  const wire0 = new Wire(notGate0, orGate, 0);
-  const wire1 = new Wire(notGate1, andGate, 0);
-  const wire2 = new Wire(orGate, notGate2);
+  var andGate3 = new AndGate(300, 300);
+  var orGate4 = new OrGate(300, 100);
+  const wire5 = new Wire(notGate0, orGate4, 0);
+  const wire6 = new Wire(notGate1, andGate3, 0);
+  const wire7 = new Wire(orGate4, notGate2);
 
 }
 catch(err) {
