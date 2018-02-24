@@ -47,6 +47,14 @@ try {
       this.elem.appendChild(shape.elem);
       return shape;
     }
+
+    text(attrs, content) {
+      const shape = new SvgElement('text', attrs);
+      this.elem.appendChild(shape.elem);
+      const t = document.createTextNode(content);
+      shape.elem.appendChild(t);
+      return shape;
+    }
   }
 
   class Svg extends SvgContainer {
@@ -72,14 +80,22 @@ try {
   }
 
   class Gate {
-    constructor(x, y, direction) {
+    constructor(x, y, direction, _class) {
+      this['class'] = _class;
       this.id = nextGateId++;
       this.x = x;
       this.y = y;
       this.direction = direction;
-      this.g = drawing.g({
-        transform: 'translate(' + x + ', ' + y + ') ' +
-          'rotate(' + directions[direction] + ')',
+      this.tg = drawing.g({
+        'class': _class,
+        transform: 'translate(' + x + ', ' + y + ')'
+      });
+      this.tg.text({
+        'text-anchor': 'middle',
+        'alignment-baseline': 'middle'
+      }, this.id);
+      this.g = this.tg.g({
+        transform: 'rotate(' + directions[direction] + ')'
       });
     }
     relativeX(dx, dy) {
@@ -104,78 +120,66 @@ try {
 
   class NotGate extends Gate {
     constructor(x, y, direction='right') {
-      super(x, y, direction);
+      super(x, y, direction, 'not');
       this.g.circle({
         r: 6,
-        cx: 22,
+        cx: 32,
         cy: 0,
-        fill: 'none',
-        stroke: 'red',
-        'stroke-width': 3,
       });
       this.g.polygon({
-        points: [[16, 0], [-28, 30], [-28, -30]],
-        fill: 'none',
-        stroke: 'red',
-        'stroke-width': 3,
+        points: [[26, 0], [-18, 30], [-18, -30]],
       });
     }
     outputPos() {
-      return this.absolutePos(28, 0);
+      return this.absolutePos(38, 0);
     }
     inputPos() {
-      return this.absolutePos(-28, 0);
+      return this.absolutePos(-18, 0);
     }
   }
 
   class AndGate extends Gate {
     constructor(x, y, direction='right') {
-      super(x, y, direction);
+      super(x, y, direction, 'and');
       this.g.path({
-        d: 'M -2,-30 ' +
+        d: 'M 2,-30 ' +
            'h -26 ' +
            'v 60 ' +
            'h 26 ' +
            'a 30 30 0 0 0 0 -60',
-        fill: 'none',
-        stroke: 'green',
-        'stroke-width': 3,
       });
     }
     outputPos() {
-      return this.absolutePos(28, 0);
+      return this.absolutePos(32, 0);
     }
     inputPos(inputNum) {
       var dy;
       if (inputNum === 0) dy = -15;
       else dy = 15;
-      return this.absolutePos(-28, dy);
+      return this.absolutePos(-24, dy);
     }
   }
 
   class OrGate extends Gate {
     constructor(x, y, direction='right') {
-      super(x, y, direction);
+      super(x, y, direction, 'or');
       this.g.path({
-        d: 'M -47.5,-30 ' +
+        d: 'M -37.5,-30 ' +
            'h 32.5 ' +
            'c 25,0 43,20 47.5,30 ' +
            'c -4.5,10 -22.5,30 -47.5,30 ' +
            'h -32.5 ' +
            'a 60 60 0 0 0 0 -60',
-        fill: 'none',
-        stroke: 'orange',
-        'stroke-width': 3,
       });
     }
     outputPos() {
-      return this.absolutePos(32.5, 0);
+      return this.absolutePos(42.5, 0);
     }
     inputPos(inputNum) {
       var dy;
       if (inputNum === 0) dy = -15;
       else dy = 15;
-      return this.absolutePos(-42, dy);
+      return this.absolutePos(-32, dy);
     }
   }
 
