@@ -1,7 +1,4 @@
 try {
-  function log(msg) {
-    document.getElementById('log').textContent += msg + '\n';
-  }
   var nextGateId = 0;
 
   class SvgElement {
@@ -104,18 +101,10 @@ try {
         transform: 'rotate(' + directions[direction] + ')'
       });
     }
-    relativeX(dx, dy) {
-      const angle = directions[this.direction];
-      return Math.cos(rad(angle)) * dx +
-             Math.sin(rad(angle)) * dy;
-    }
-    relativeY(dx, dy) {
-      const angle = directions[this.direction];
-      return Math.sin(rad(angle)) * dx +
-             Math.cos(rad(angle)) * dy;
-    }
     relativePos(dx, dy) {
-      return [this.relativeX(dx, dy), this.relativeY(dx, dy)];
+      const angle = directions[this.direction];
+      return [Math.cos(rad(angle)) * dx + Math.sin(rad(angle)) * dy,
+              Math.sin(rad(angle)) * dx + Math.cos(rad(angle)) * dy];
     }
     absolutePos(dx, dy) {
       const relPos = this.relativePos(dx, dy);
@@ -195,40 +184,44 @@ try {
       this.toGate = toGate;
       const start = fromGate.outputPos();
       const end = toGate.inputPos(inputNum);
+      const points = [start];
       const dx = end[0] - start[0];
       const dy = end[1] - start[1];
-      const d = 'M ' + start[0] + ' ' + start[1] + ' ' + route(dx, dy) +
-                ' L ' + end[0] + ' ' + end[1];
-      drawing.path({
+      const routePoints = route(dx, dy);
+      for (let p of routePoints) {
+        const lastPoint = points[points.length - 1];
+        points.push([lastPoint[0] + p[0], lastPoint[1] + p[1]]);
+      }
+      points.push(end);
+      drawing.polyline({
         'class': 'wire',
-        d: d
+        points: points
       });
     }
     static direct(dx, dy) {
-      return '';
+      return [];
     }
     static xy(dx, dy) {
-      return 'h ' + dx;
+      return [[dx, 0]];
     }
     static yx(dx, dy) {
-      return 'v ' + dy;
+      return [[0, dy]];
     }
     static xyx(dx, dy) {
-      return 'h ' + dx/2 + ' v ' + dy;
+      return [[dx/2, 0], [0, dy]];
     }
   }
 
-  var notGate0 = new NotGate(100, 100);
-  var notGate1 = new NotGate(200, 150, 'down');
-  var notGate2 = new NotGate(500, 150, 'left');
-  var andGate3 = new AndGate(300, 300);
-  var orGate4 = new OrGate(300, 100);
+  var notGate0 = new NotGate(50, 50);
+  var notGate1 = new NotGate(50, 200, 'down');
+  var notGate2 = new NotGate(400, 150, 'left');
+  var andGate3 = new AndGate(150, 300);
+  var orGate4 = new OrGate(200, 100);
 
   const wire5 = new Wire(notGate0, orGate4, 0, Wire.xyx);
   const wire6 = new Wire(notGate1, andGate3, 0, Wire.yx);
   const wire7 = new Wire(orGate4, notGate2, null,
-    (dx, dy) => 'h ' + (dx + 20) + ' v ' + dy);
-
+    (dx, dy) => [[dx + 20, 0], [0, dy]]);
 }
 catch(err) {
   console.error(err.message, err.stack);
