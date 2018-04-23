@@ -3,7 +3,7 @@ class Gate {
     this.x = x;
     this.y = y;
     this.direction = direction;
-    this.d3g = drawing.append('g').attrs({
+    this.g = drawing.append('g').attrs({
       transform: `translate(${x}, ${y}) rotate(${this.direction})`,
     });
   }

@@ -2,7 +2,7 @@ class Switch extends Gate{
   constructor(x, y, direction, isOpen=0, swapPins=false) {
     super (x, y, direction);
     this.swapPins = swapPins;
-    this.rect = this.d3g.append('rect').attrs({
+    this.rect = this.g.append('rect').attrs({
       x: -25,
       y: -10,
       width: 50,
@@ -21,7 +21,7 @@ class Switch extends Gate{
       }
     }
     this.rect.node().addEventListener('click', clickHandler);
-    this.circle0 = this.d3g.append('circle').attrs({
+    this.circle0 = this.g.append('circle').attrs({
       r: 6,
       cx: -12.5,
       cy: 0,
@@ -30,7 +30,7 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'none'
     });
-    this.circle1 = this.d3g.append('circle').attrs({
+    this.circle1 = this.g.append('circle').attrs({
       r: 6,
       cx: 12.5,
       cy: 0,
@@ -39,14 +39,14 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'none'
     });
-    this.path = this.d3g.append('path').attrs({
+    this.path = this.g.append('path').attrs({
       fill: 'none',
       stroke: 'grey',
       'stroke-width': 3,
       'pointer-events': 'visible'
     });
     this.path.node().addEventListener('click', clickHandler);
-    this.wire = this.d3g.append('polyline').attrs({
+    this.wire = this.g.append('polyline').attrs({
       points: [[-12.5, 0], [12.5, 0]],
       fill: 'none',
       stroke: 'black',
@@ -99,7 +99,7 @@ class Switch extends Gate{
 class NotGate extends Gate{
   constructor(x, y, direction = 0){
     super (x, y, direction);
-    this.circle = this.d3g.append('circle').attrs({
+    this.circle = this.g.append('circle').attrs({
       r: 6,
       cx: 22,
       cy: 0,
@@ -107,7 +107,7 @@ class NotGate extends Gate{
       stroke: 'red',
       'stroke-width': 3,
     });
-    this.polygon = this.d3g.append('polygon').attrs({
+    this.polygon = this.g.append('polygon').attrs({
       points: [[16, 0], [-28, 30], [-28, -30]],
       fill: 'none',
       'stroke-width': 3,
@@ -125,7 +125,7 @@ class NotGate extends Gate{
 class AndGate extends Gate{
   constructor(x, y, direction = 0){
     super(x, y, direction);
-    this.d3g.append('path').attrs({
+    this.g.append('path').attrs({
       d: 'M ' + (-2) + ',' + (-30) + ' h -26 v 60 h 26 a 30 30 0 0 0 0 -60',
       fill: 'none',
       stroke: 'green',
@@ -145,7 +145,7 @@ class AndGate extends Gate{
 class OrGate extends Gate{
   constructor(x, y, direction = 0){
     super (x, y, direction);
-    this.d3g.append('path').attrs({
+    this.g.append('path').attrs({
       d: 'M ' + (-47.5) + ',' + (-30) +
         ' h 32.5 a 100 100 0 0 1 47.5 30 a 100 100 ' +
         '0 0 1 -47.5 30 h -32.5 a 60 60 0 0 0 0 -60',
@@ -167,7 +167,7 @@ class OrGate extends Gate{
 class XorGate extends Gate{
   constructor(x, y, direction = 0){
     super (x, y, direction);
-    this.d3g.append('path').attrs({
+    this.g.append('path').attrs({
       d: 'M ' + (-47.5) + ',' + (-30) + ' ' +
         'h 32.5 a 100 100 0 0 1 47.5 30 a 100 100 0 0 1 -47.5 30 ' +
         'h -32.5 a 60 60 0 0 0 0 -60',
@@ -175,7 +175,7 @@ class XorGate extends Gate{
       stroke: 'purple',
       'stroke-width': 3,
     });
-    this.d3g.append('path').attrs({
+    this.g.append('path').attrs({
       d: 'M ' + (-55) + ', ' + (-30) + ' a 60 60 0 0 1 0 60',
       fill: 'none',
       stroke: 'purple',
@@ -195,7 +195,7 @@ class WinBox extends Gate{
   constructor(x, y, inputSide='up'){
     super (x, y, 0);
     this.inputSide = inputSide;
-    this.rect = this.d3g.append('rect').attrs({
+    this.rect = this.g.append('rect').attrs({
       x: -40,
       y: -15,
       width: 80,
