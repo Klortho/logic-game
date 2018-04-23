@@ -1,3 +1,8 @@
+const drawing = d3.select(document.body).append('svg').attrs({
+  width: 600,
+  height: 500,
+});
+
 var level = {
   gates: [
     new Switch(300, 300, 0, 1),
