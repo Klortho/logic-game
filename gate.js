@@ -1,45 +1,7 @@
-class SvgElement {
-  constructor(tag, attrs) {
-    this.elem = document.createElementNS('http://www.w3.org/2000/svg', tag);
-    for (let name in attrs) {
-      this.elem.setAttribute(name, attrs[name]);
-    }
-  }
-  setAttr(name, value) {
-    this.elem.setAttribute(name, value);
-  }
-}
-class SvgContainer extends SvgElement{
-  constructor(tag, attrs) {
-    super(tag, attrs);
-  }
-  g(attrs) {
-    const shape = new SvgContainer('g', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
-  path(attrs) {
-    const shape = new SvgElement('path', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
-  polygon(attrs) {
-    const shape = new SvgElement('polygon', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
-  rect(attrs) {
-    const shape = new SvgElement('rect', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
-}
-
 const drawing = d3.select(document.body).append('svg').attrs({
   width: 600,
   height: 500,
 })
-
 
 class Gate {
   constructor(x, y, direction){
