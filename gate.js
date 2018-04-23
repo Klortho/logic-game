@@ -34,18 +34,12 @@ class SvgContainer extends SvgElement{
     return shape;
   }
 }
-const draw = new SvgContainer('svg', {
-  width: 2500,
-  height: 2385,
-});
 
 const drawing = d3.select(document.body).append('svg').attrs({
   width: 600,
   height: 500,
 })
 
-
-document.body.appendChild(draw.elem);
 
 class Gate {
   constructor(x, y, direction){
@@ -81,6 +75,7 @@ class Gate {
     }
   }
 }
+
 class Switch extends Gate{
   constructor(x, y, direction, isOpen=0, swapPins=false) {
     super (x, y, direction);
@@ -204,6 +199,7 @@ class NotGate extends Gate{
     return this.position(-28, 0);
   }
 }
+
 class AndGate extends Gate{
   constructor(x, y, direction = 0){
     super(x, y, direction);
@@ -376,20 +372,5 @@ class Wire {
       }
       sel.remove();
     }
-///////////////////////////////////////////////////////////
   }
 }
-var level = {
-  gates: [
-    new Switch(300, 300, 0, 1),
-    new WinBox(550, 300, 'left')
-  ],
-};
-level.wires = [
-  new Wire([50, 300], level.gates[0]),
-  new Wire(level.gates[0], level.gates[1]),
-];
-level.wires[0].wire.node().dispatchEvent(new Event('on'));
-/*setTimeout(() => {
-  level.wires[0].wire.elem.dispatchEvent(new Event('off'))
-},10000); */
