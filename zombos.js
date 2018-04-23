@@ -18,11 +18,6 @@ class SvgContainer extends SvgElement{
     this.elem.appendChild(shape.elem);
     return shape;
   }
-  circle(attrs) {
-    const shape = new SvgElement('circle', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
   path(attrs) {
     const shape = new SvgElement('path', attrs);
     this.elem.appendChild(shape.elem);
@@ -30,11 +25,6 @@ class SvgContainer extends SvgElement{
   }
   polygon(attrs) {
     const shape = new SvgElement('polygon', attrs);
-    this.elem.appendChild(shape.elem);
-    return shape;
-  }
-  polyline(attrs) {
-    const shape = new SvgElement('polyline', attrs);
     this.elem.appendChild(shape.elem);
     return shape;
   }
@@ -49,7 +39,7 @@ const draw = new SvgContainer('svg', {
   height: 2385,
 });
 
-const d3Drawing = d3.select(document.body).append('svg').attrs({
+const drawing = d3.select(document.body).append('svg').attrs({
   width: 600,
   height: 500,
 })
@@ -62,7 +52,7 @@ class Gate {
     this.x = x;
     this.y = y;
     this.direction = direction;
-    this.d3g = d3Drawing.append('g').attrs({
+    this.d3g = drawing.append('g').attrs({
       transform: `translate(${x}, ${y}) rotate(${this.direction})`,
     });
   }
@@ -78,14 +68,14 @@ class Gate {
   }
   outputOn(){
     if(this.connectedWire){
-      this.connectedWire.wire.elem.dispatchEvent(
+      this.connectedWire.wire.node().dispatchEvent(
         new Event('on')
       );
     }
   }
   outputOff(){
     if(this.connectedWire){
-      this.connectedWire.wire.elem.dispatchEvent(
+      this.connectedWire.wire.node().dispatchEvent(
         new Event('off')
       );
     }
@@ -317,15 +307,7 @@ class Wire {
       from.connectWire(this)
     } else {
       start = from;
-      draw.circle({r: 2,
-        cx: from[0],
-        cy: from[1],
-        fill: 'blue',
-        stroke: 'blue',
-        'stroke-width': 3,
-        'pointer-events': 'none',
-      });
-      d3Drawing.append('circle').attrs({
+      drawing.append('circle').attrs({
         cx: from[0],
         cy: from[1],
         fill: 'blue',
@@ -354,13 +336,7 @@ class Wire {
       wayP.push([x,y]);
     }
     var points = [start, ...wayP, end];
-    this.wire = draw.polyline({
-      points,
-      fill: 'none',
-      stroke: 'blue',
-      'stroke-width': 3,
-    });
-    /*this.wire = */d3Drawing.append('polyline').attrs({
+    this.wire = drawing.append('polyline').attrs({
       points,
       fill: 'none',
       stroke: 'blue',
@@ -368,28 +344,21 @@ class Wire {
     });
     this.points = points;
 /////////////////////////////////////////////////////////
-    this.wire.elem.addEventListener('on', function() {
+    this.wire.node().addEventListener('on', function() {
       this.timerId = setInterval(spitElec, 500);
     });
-    this.wire.elem.addEventListener('off', function(){
+    this.wire.node().addEventListener('off', function(){
       clearInterval(this.timerId);
     });
     function spitElec(){
-      var dot = draw.circle({
+      var d3Dot = drawing.append('circle').attrs({
         r: 4.5,
         cx: start[0],
         cy: start[1],
         fill: 'yellow',
         stroke: 'none',
       });
-      var d3Dot = d3Drawing.append('circle').attrs({
-        r: 4.5,
-        cx: start[0],
-        cy: start[1],
-        fill: 'yellow',
-        stroke: 'none',
-      });
-      var sel = d3.select(dot.elem);
+      var sel = d3Dot;
       for (var nextP = 1; nextP < points.length; nextP++) {
         var p0 = points[nextP - 1];
         var p1 = points[nextP];
@@ -420,7 +389,7 @@ level.wires = [
   new Wire([50, 300], level.gates[0]),
   new Wire(level.gates[0], level.gates[1]),
 ];
-level.wires[0].wire.elem.dispatchEvent(new Event('on'));
+level.wires[0].wire.node().dispatchEvent(new Event('on'));
 /*setTimeout(() => {
   level.wires[0].wire.elem.dispatchEvent(new Event('off'))
 },10000); */
