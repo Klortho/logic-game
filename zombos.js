@@ -1,4 +1,6 @@
-  class SvgElement {
+
+
+class SvgElement {
   constructor(tag, attrs) {
     this.elem = document.createElementNS('http://www.w3.org/2000/svg', tag);
     for (let name in attrs) {
@@ -48,7 +50,15 @@ const draw = new SvgContainer('svg', {
   width: 2500,
   height: 2385,
 });
+
+const d3Drawing = d3.select(document.body).append('svg').attrs({
+  width: 600,
+  height: 500,
+})
+
+
 document.body.appendChild(draw.elem);
+
 class Gate {
   constructor(x, y, direction){
     this.x = x;
@@ -56,6 +66,9 @@ class Gate {
     this.direction = direction;
     this.g = draw.g({
       transform: 'translate(' + x + ', ' + y + ') rotate(' + this.direction + ')'
+    });
+    d3Drawing.append('g').attrs({
+      transform: `translate(${x}, ${y}) rotate(${this.direction})`,
     });
   }
   position(dx, dy) {
@@ -282,20 +295,29 @@ class WinBox extends Gate{
   }
 }
 class Wire {
-  constructor(from, toGate, inputNum, wp=[]){
+  constructor(from, toGate, inputNum, wp=[]) {
     var start;
-    if(from instanceof Gate){
+    if (from instanceof Gate) {
       start = from.outputPos();
       from.connectWire(this)
     } else {
       start = from;
       draw.circle({r: 2,
-      cx: from[0],
-      cy: from[1],
-      fill: 'blue',
-      stroke: 'blue',
-      'stroke-width': 3,
-      'pointer-events': 'none'});
+        cx: from[0],
+        cy: from[1],
+        fill: 'blue',
+        stroke: 'blue',
+        'stroke-width': 3,
+        'pointer-events': 'none',
+      });
+      d3Drawing.append('circle').attrs({
+        cx: from[0],
+        cy: from[1],
+        fill: 'blue',
+        stroke: 'blue',
+        'stroke-width': 3,
+        'pointer-events': 'none',
+      });
     }
     this.toGate = toGate;
     var end = toGate.inputPos(inputNum);
@@ -323,6 +345,12 @@ class Wire {
       stroke: 'blue',
       'stroke-width': 3,
     });
+    /*this.wire = */d3Drawing.append('polyline').attrs({
+      points,
+      fill: 'none',
+      stroke: 'blue',
+      'stroke-width': 3,
+    });
     this.points = points;
 /////////////////////////////////////////////////////////
     this.wire.elem.addEventListener('on', function() {
@@ -338,6 +366,13 @@ class Wire {
         cy: start[1],
         fill: 'yellow',
         stroke: 'none',
+      });
+      var d3Dot = d3Drawing.append('circle').attrs({
+        r: 4.5,
+        cx: start[0],
+        cy: start[1],
+        fill: 'yellow',
+        stroke: 'none',        
       });
       var sel = d3.select(dot.elem);
       for (var nextP = 1; nextP < points.length; nextP++) {
