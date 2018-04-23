@@ -1,5 +1,3 @@
-
-
 class SvgElement {
   constructor(tag, attrs) {
     this.elem = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -67,7 +65,7 @@ class Gate {
     this.g = draw.g({
       transform: 'translate(' + x + ', ' + y + ') rotate(' + this.direction + ')'
     });
-    d3Drawing.append('g').attrs({
+    this.d3g = d3Drawing.append('g').attrs({
       transform: `translate(${x}, ${y}) rotate(${this.direction})`,
     });
   }
@@ -110,6 +108,16 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'visible'
     });
+    this.d3Rect = this.d3g.append('rect').attrs({
+      x: -25,
+      y: -10,
+      width: 50,
+      height: 20,
+      fill: 'none',
+      stroke: 'black',
+      'stroke-width': 3,
+      'pointer-events': 'visible'
+    });
     var sw = this;
     function clickHandler() {
       if(sw.isOpen){
@@ -119,7 +127,7 @@ class Switch extends Gate{
       }
     }
     this.rect.elem.addEventListener('click', clickHandler);
-    this.circle0 = this.g.circle({
+    this.circle0 = this.d3g.append('circle').attrs({
       r: 6,
       cx: -12.5,
       cy: 0,
@@ -128,7 +136,7 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'none'
     });
-    this.circle1 = this.g.circle({
+    this.circle1 = this.d3g.append('circle').attrs({
       r: 6,
       cx: 12.5,
       cy: 0,
@@ -137,14 +145,14 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'none'
     });
-    this.path = this.g.path({
+    this.path = this.d3g.append('path').attrs({
       fill: 'none',
       stroke: 'grey',
       'stroke-width': 3,
       'pointer-events': 'visible'
     });
-    this.path.elem.addEventListener('click', clickHandler);
-    this.wire = this.g.polyline({
+    this.path.node().addEventListener('click', clickHandler);
+    this.wire = this.d3g.append('polyline').attrs({
       points: [[-12.5, 0], [12.5, 0]],
       fill: 'none',
       stroke: 'black',
@@ -168,21 +176,23 @@ class Switch extends Gate{
           cp = [R * Math.cos(a), -(10 + R * Math.sin(a))],
           tp0 = [cp[0] - r * Math.sin(a), cp[1] - r * Math.cos(a)],
           tp1 = [cp[0] + r * Math.sin(a), cp[1] + r * Math.cos(a)];
-    this.path.setAttr('d', 'M -2.5 -10 L ' + tp0[0] +
+    this.path.attr('d',
+      'M -2.5 -10 L ' + tp0[0] +
       ' ' + tp0[1] + ' ' + 'A ' + r + ' ' + r +
       ' 0 0 1 ' + tp1[0] + ' ' + tp1[1] + ' ' +
-      'L 2.5 -10');
+      'L 2.5 -10'
+    );
   }
   open() {
     this.isOpen = true;
     this.drawToggler();
-    this.wire.setAttr('opacity', 0);
+    this.wire.attr('opacity', 0);
     this.outputOff();
   }
   close() {
     this.isOpen = false;
     this.drawToggler();
-    this.wire.setAttr('opacity', 1);
+    this.wire.attr('opacity', 1);
     this.outputOn();
   }
   outputPos() {
@@ -372,7 +382,7 @@ class Wire {
         cx: start[0],
         cy: start[1],
         fill: 'yellow',
-        stroke: 'none',        
+        stroke: 'none',
       });
       var sel = d3.select(dot.elem);
       for (var nextP = 1; nextP < points.length; nextP++) {
