@@ -1,33 +1,3 @@
 svg {
   background: #E8E8E8;
-  font-family: arial;
-  font-size: 10pt;
-}
-
-* {
-  fill: none;
-  stroke-width: 2;
-}
-
-.not text {
-  fill: red;
-}
-.not circle, .not polygon, .not line {
-  stroke: red;
-}
-.and text {
-  fill: green;
-}
-.and path {
-  stroke: green;
-}
-.or text {
-  fill: orange;
-}
-.or path {
-  stroke: orange;
-}
-
-.wire {
-  stroke: blue;
 }
