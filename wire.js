@@ -16,12 +16,12 @@ class Wire {
       });
     }
     this.toGate = toGate;
-    var end = toGate.inputPos(inputNum);
-    var x = start[0];
-    var y = start[1];
-    var dx = end[0] - start[0];
-    var dy = end[1] - start[1];
-    var wayP = [];
+    const end = toGate.inputPos(inputNum);
+    const x = start[0];
+    const y = start[1];
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    const wayP = [];
     for (var i = 0; i < wp.length; i++){
       if (wp[i][0] == "h"){
         x += dx * wp[i][1];
@@ -34,7 +34,7 @@ class Wire {
       }
       wayP.push([x,y]);
     }
-    var points = [start, ...wayP, end];
+    const points = [start, ...wayP, end];
     this.wire = drawing.append('polyline').attrs({
       points,
       fill: 'none',
@@ -42,7 +42,7 @@ class Wire {
       'stroke-width': 3,
     });
     this.points = points;
-/////////////////////////////////////////////////////////
+
     this.wire.node().addEventListener('on', function() {
       this.timerId = setInterval(spitElec, 500);
     });
@@ -50,14 +50,14 @@ class Wire {
       clearInterval(this.timerId);
     });
     function spitElec(){
-      var d3Dot = drawing.append('circle').attrs({
+      const dot = drawing.append('circle').attrs({
         r: 4.5,
         cx: start[0],
         cy: start[1],
         fill: 'yellow',
         stroke: 'none',
       });
-      var sel = d3Dot;
+      var sel = dot;
       for (var nextP = 1; nextP < points.length; nextP++) {
         var p0 = points[nextP - 1];
         var p1 = points[nextP];

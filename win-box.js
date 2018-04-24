@@ -1,4 +1,4 @@
-class WinBox extends Gate{
+class WinBox extends Gate {
   constructor(x, y, inputSide='up'){
     super (x, y, 0);
     this.inputSide = inputSide;
@@ -13,14 +13,9 @@ class WinBox extends Gate{
     });
   }
   inputPos(){
-    if (this.inputSide == 'up'){
-      return this.position(0, -15);
-    } else if (this.inputSide == 'down'){
-      return this.postion(0, 15);
-    } else if (this.inputSide == 'left'){
-      return this.position(-40, 0);
-    } else {
-      return this.position(40, 0);
-    }
+    return this.inputSide === 'up' ? this.position(0, -15)
+      : this.inputSide === 'down' ? this.postion(0, 15)
+      : this.inputSide === 'left' ? this.position(-40, 0)
+      : this.position(40, 0);
   }
 }

@@ -1,5 +1,5 @@
 class Gate {
-  constructor(x, y, direction){
+  constructor(x, y, direction) {
     this.x = x;
     this.y = y;
     this.direction = direction;
@@ -14,10 +14,10 @@ class Gate {
       this.y + dx * Math.sin(angle) + dy * Math.cos(angle)
     ];
   }
-  connectWire(wire){
+  connectWire(wire) {
     this.connectedWire = wire;
   }
-  outputOn(){
+  outputOn() {
     if (this.connectedWire) {
       this.connectedWire.wire.node().dispatchEvent(
         new Event('on')
