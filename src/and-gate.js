@@ -1,6 +1,6 @@
 class AndGate extends Gate {
-  constructor(x, y, direction=0) {
-    super(x, y, direction);
+  constructor(x, y, orientation='right') {
+    super(x, y, orientation);
     this.g.append('path').attrs({
       d: ['M', -2, -30,
           'h', -26,
@@ -16,9 +16,6 @@ class AndGate extends Gate {
     return this.position(28, 0);
   }
   inputPos(inputNum) {
-    var dy;
-    if (inputNum === 0) dy = -15;
-    else if (inputNum === 1) dy = 15;
-    return this.position(-28, dy);
+    return this.position(-28, inputNum === 0 ? -15 : 15);
   }
 }

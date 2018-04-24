@@ -1,15 +1,18 @@
-class Switch extends Gate{
-  constructor(x, y, direction, isOpen=0, swapPins=false) {
-    super(x, y, direction);
-    this.swapPins = swapPins;
 
-    const toggle = () => {
-      if (this.isOpen) {
+class Switch extends Gate{
+  constructor(x, y, orientation, options) {
+    super(x, y, orientation);
+    Object.assign(this, Switch.defaults, options);
+    const {state, swapPins} = this;
+
+    const handleClick = () => {
+      if (this.state === 'open') {
         this.close();
       } else {
         this.open();
       }
     };
+
     const rect = this.g.append('rect').attrs({
       x: -25,
       y: -10,
@@ -20,7 +23,7 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'visible'
     });
-    rect.node().addEventListener('click', toggle);
+    rect.node().addEventListener('click', handleClick);
 
     this.g.append('circle').attrs({
       r: 6,
@@ -47,7 +50,7 @@ class Switch extends Gate{
       'stroke-width': 3,
       'pointer-events': 'visible'
     });
-    this.path.node().addEventListener('click', toggle);
+    this.path.node().addEventListener('click', handleClick);
 
     this.wire = this.g.append('polyline').attrs({
       points: [[-12.5, 0], [12.5, 0]],
@@ -58,16 +61,15 @@ class Switch extends Gate{
       'pointer-events': 'none'
     });
 
-    if (isOpen){
+    if (state === 'open') {
       this.open();
     } else {
       this.close();
     }
-
   }
 
   drawToggler() {
-    const adeg = this.isOpen ? 70 : 110;
+    const adeg = this.state === 'open' ? 70 : 110;
     const a = adeg * Math.PI / 180;
     const R = 35;
     const r = 7;
@@ -82,13 +84,15 @@ class Switch extends Gate{
     );
   }
   open() {
-    this.isOpen = true;
+    if (this.state === 'open') return;
+    this.state = 'open';
     this.drawToggler();
     this.wire.attr('opacity', 0);
     this.outputOff();
   }
   close() {
-    this.isOpen = false;
+    if (this.state === 'closed') return;
+    this.state = 'closed';
     this.drawToggler();
     this.wire.attr('opacity', 1);
     this.outputOn();
@@ -101,3 +105,7 @@ class Switch extends Gate{
     return this.position((this.swapPins ? 12.5 : -12.5), 0);
   }
 }
+Switch.defaults = {
+  state: 'closed',
+  swapPins: false,
+};

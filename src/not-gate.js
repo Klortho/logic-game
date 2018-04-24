@@ -1,6 +1,6 @@
 class NotGate extends Gate{
-  constructor(x, y, direction=0) {
-    super (x, y, direction);
+  constructor(x, y, orientation='right') {
+    super (x, y, orientation);
     this.g.append('circle').attrs({
       r: 6,
       cx: 22,
