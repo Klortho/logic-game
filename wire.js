@@ -17,8 +17,8 @@ class Wire {
     }
     this.toGate = toGate;
     const end = toGate.inputPos(inputNum);
-    const x = start[0];
-    const y = start[1];
+    var x = start[0];
+    var y = start[1];
     const dx = end[0] - start[0];
     const dy = end[1] - start[1];
     const wayP = [];
@@ -73,6 +73,9 @@ class Wire {
             cy: points[nextP][1],
           });
       }
+      sel.on("end", function(){
+
+      })
       sel.remove();
     }
   }
