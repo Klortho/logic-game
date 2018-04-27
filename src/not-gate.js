@@ -1,25 +1,21 @@
-class NotGate extends Gate{
-  constructor(x, y, orientation='right') {
-    super (x, y, orientation);
-    this.g.append('circle').attrs({
-      r: 6,
-      cx: 22,
+class NotGate {
+  constructor(g) {
+    g.append('circle').attrs({
+      r: 5,
+      cx: 17,
       cy: 0,
       fill: 'none',
       stroke: 'red',
-      'stroke-width': 3,
+      'stroke-width': 2,
     });
-    this.g.append('polygon').attrs({
-      points: [[16, 0], [-28, 30], [-28, -30]],
+    g.append('polygon').attrs({
+      points: [[11, 0], [-22, 20], [-22, -20]],
       fill: 'none',
-      'stroke-width': 3,
+      'stroke-width': 2,
       stroke: 'red',
     });
   }
-  outputPos() {
-    return this.position(28, 0);
-  }
-  inputPos() {
-    return this.position(-28, 0);
+  pinPos(pinNum) {
+    return [pinNum === 0 ? -22 : 22, 0];
   }
 }

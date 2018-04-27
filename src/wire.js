@@ -1,15 +1,15 @@
 class Wire {
-  // `from` should be a gate instance or an object with `position` and
-  // `initial` values. `initial` should be either "on" or "off".
-  constructor(from, toGate, inputNum, waypoints=[]) {
-    const start = from.outputPos();
-    from.connectWire(this)
+  constructor(drawing, from, to, waypoints) {
+    const [fromGate, fromPin] = from;
+
+    const startPos = fromGate.outputPos();
+    fromGate.setOutputWire(this)
     this.toGate = toGate;
-    const end = toGate.inputPos(inputNum);
-    var x = start[0];
-    var y = start[1];
-    const dx = end[0] - start[0];
-    const dy = end[1] - start[1];
+    const endPos = toGate.inputPos(inputNum);
+    var x = startPos[0];
+    var y = startPos[1];
+    const dx = endPos[0] - startPos[0];
+    const dy = endPos[1] - startPos[1];
     const wayP = [];
     for (var i = 0; i < waypoints.length; i++){
       if (waypoints[i][0] == "h"){
@@ -24,7 +24,7 @@ class Wire {
       }
       wayP.push([x,y]);
     }
-    const points = [start, ...wayP, end];
+    const points = [startPos, ...wayP, endPos];
     this.points = points;
     this.wire = drawing.append('polyline').attrs({
       points,
@@ -35,17 +35,16 @@ class Wire {
 
     this.state = 'off';
     this.timerId = null;
-    if (from.initial === 'on') this.turnOn();
   }
 
   // This creates one dot that will slide down the wire
   spit() {
     const points = this.points;
-    const start = points[0];
+    const startPos = points[0];
     const dot = drawing.append('circle').attrs({
       r: 4.5,
-      cx: start[0],
-      cy: start[1],
+      cx: startPos[0],
+      cy: startPos[1],
       fill: 'yellow',
       stroke: 'none',
     });
@@ -65,8 +64,6 @@ class Wire {
           cy: points[nextP][1],
         });
     }
-    //selection.on("end", function(){
-    //})
     selection.remove();
   }
 

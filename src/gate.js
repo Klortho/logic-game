@@ -1,17 +1,18 @@
+
 class Gate {
-  // orientation should be one of 'up', 'right', 'down', or 'left'
-  constructor(x, y, orientation) {
-    this.x = x;
-    this.y = y;
-    this.orientation = orientation;
+  // orientation is one of `up`, `right`, `down`, or `left`
+  constructor(drawing, x, y, orientation='right') {
+    Object.assign(this, {drawing, x, y, orientation});
     this.g = drawing.append('g').attrs({
       transform: `translate(${x}, ${y}) rotate(${this.angleDegrees})`,
     });
     this.inputWires = [];
     this.outputWire = null;
-    this.state = 'off';
+    this.outputState = null;
   }
 
+  // This is a "getter". It computes the angle of the gate, in degrees,
+  // from its orientation.
   get angleDegrees() {
     return {
       up: 90,
@@ -20,9 +21,14 @@ class Gate {
       left: 180,
     }[this.orientation];
   }
+
+  // Gets the angle in radians.
   get angleRadians() {
     return this.angleDegrees * Math.PI / 180;
   }
+
+  // Returns the absolute position of a point on the gate, given the
+  // point's coordinates relative to the center
   position(dx, dy) {
     const a = this.angleRadians;
     return [
@@ -38,10 +44,15 @@ class Gate {
     this.outputWire = wire;
   }
 
-  outputOn() {
+  turnOutputOn() {
+    if (this.outputState === 'on') return;
+    this.outputState = 'on';
     if (this.outputWire) this.outputWire.turnOn();
   }
-  outputOff() {
+
+  turnOutputOff() {
+    if (this.outputState === 'off') return;
+    this.outputState = 'off';
     if (this.outputWire) this.outputWire.turnOff();
   }
 }

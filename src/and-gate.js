@@ -1,7 +1,6 @@
-class AndGate extends Gate {
-  constructor(x, y, orientation='right') {
-    super(x, y, orientation);
-    this.g.append('path').attrs({
+class AndGate {
+  constructor(g) {
+    g.append('path').attrs({
       d: ['M', -2, -30,
           'h', -26,
           'v', 60,
@@ -9,13 +8,15 @@ class AndGate extends Gate {
           'a', 30, 30, 0, 0, 0, 0, -60].join(' '),
       fill: 'none',
       stroke: 'green',
-      'stroke-width': 3,
+      'stroke-width': 2,
     });
   }
-  outputPos() {
-    return this.position(28, 0);
-  }
-  inputPos(inputNum) {
-    return this.position(-28, inputNum === 0 ? -15 : 15);
+  pinPos(pinNum) {
+    const pins = [
+      [-28, -15],
+      [-28, 15],
+      [28, 0],
+    ];
+    return pins[pinNum];
   }
 }
