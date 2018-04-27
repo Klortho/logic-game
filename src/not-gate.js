@@ -1,21 +1,31 @@
-class NotGate {
-  constructor(g) {
-    g.append('circle').attrs({
+class NotGate extends Gate {
+  constructor(drawing, id, position, orientation) {
+    super(drawing, id, position, orientation);
+    this.g.append('circle').attrs({
       r: 5,
       cx: 17,
       cy: 0,
       fill: 'none',
-      stroke: 'red',
+      stroke: this.color,
       'stroke-width': 2,
     });
-    g.append('polygon').attrs({
+    this.g.append('polygon').attrs({
       points: [[11, 0], [-22, 20], [-22, -20]],
       fill: 'none',
       'stroke-width': 2,
-      stroke: 'red',
+      stroke: this.color,
     });
   }
-  pinPos(pinNum) {
-    return [pinNum === 0 ? -22 : 22, 0];
+  get color() {
+    return 'red';
+  }
+  get labelPos() {
+    return [-10, 0];
+  }
+  get pinPositions() {
+    return [
+      [-22, 0],
+      [22, 0],
+    ];
   }
 }

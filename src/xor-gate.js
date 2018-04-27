@@ -1,6 +1,7 @@
-class XorGate {
-  constructor(g) {
-    g.append('path').attrs({
+class XorGate extends Gate {
+  constructor(drawing, id, position, orientation) {
+    super(drawing, id, position, orientation);
+    this.g.append('path').attrs({
       d: ['M', -44, -30,
           'h', 24,
           'c', 25, 0, 43, 20, 47.5, 30,
@@ -8,22 +9,28 @@ class XorGate {
           'h', -24,
           'a', 60, 60, 0, 0, 0, 0, -60].join(' '),
       fill: 'none',
-      stroke: 'purple',
+      stroke: this.color,
       'stroke-width': 2,
     });
-    g.append('path').attrs({
+    this.g.append('path').attrs({
       d: ['M', -55, -30,
           'a', 60, 60, 0, 0, 1, 0, 60].join(' '),
       fill: 'none',
-      stroke: 'purple',
+      stroke: this.color,
       'stroke-width': 2
     });
   }
-  pinPos(pinNum) {
+  get color() {
+    return 'purple';
+  }
+  get labelPos() {
+    return [-10, 0];
+  }
+  get pinPositions() {
     return [
-      [-42, -15],
-      [-42, 15],
-      [32.5, 0],
-    ][pinNum];
+      [-38, -15],
+      [-38, 15],
+      [28, 0],
+    ];
   }
 }

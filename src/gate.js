@@ -1,58 +1,66 @@
-
 class Gate {
   // orientation is one of `up`, `right`, `down`, or `left`
-  constructor(drawing, x, y, orientation='right') {
-    Object.assign(this, {drawing, x, y, orientation});
-    this.g = drawing.append('g').attrs({
-      transform: `translate(${x}, ${y}) rotate(${this.angleDegrees})`,
-    });
-    this.inputWires = [];
-    this.outputWire = null;
-    this.outputState = null;
+  constructor(drawing, id, position, orientation) {
+    Object.assign(this, {id, position, orientation});
+
+    this.angle = {
+      right: 0,
+      up: 270,
+      left: 180,
+      down: 90,
+    }[orientation];
+    this.g = drawing.append('g').attr('transform', [
+      `translate(${position.join(', ')})`,
+      `rotate(${this.angle})`
+    ].join(' '));
+
+    const labelXY = this.absPos(...this.labelPos);
+    this.label = drawing.append('text').attrs({
+      x: labelXY[0],
+      y: labelXY[1],
+      fill: this.color,
+      'font-family': 'Verdana',
+      'font-size': 10,
+      'text-anchor': 'middle',
+      'alignment-baseline': 'middle',
+    })
+    .text(id);
+
+    this.inputs = [];
+    this.outputs = [];
   }
 
-  // This is a "getter". It computes the angle of the gate, in degrees,
-  // from its orientation.
-  get angleDegrees() {
-    return {
-      up: 90,
-      right: 0,
-      down: -90,
-      left: 180,
-    }[this.orientation];
+  // default color
+  get color() {
+    return 'black';
+  }
+  // default labelPos
+  get labelPos() {
+    return [0, 0];
   }
 
   // Gets the angle in radians.
-  get angleRadians() {
-    return this.angleDegrees * Math.PI / 180;
+  get aRads() {
+    return this.angle * Math.PI / 180;
+  }
+  get x() {
+    return this.position[0];
+  }
+  get y() {
+    return this.position[1];
   }
 
   // Returns the absolute position of a point on the gate, given the
   // point's coordinates relative to the center
-  position(dx, dy) {
-    const a = this.angleRadians;
+  absPos(rx, ry) {
+    const a = this.aRads;
     return [
-      this.x + dx * Math.cos(a) + dy * Math.sin(a),
-      this.y + dx * Math.sin(a) + dy * Math.cos(a)
+      this.x + rx * Math.cos(a) + ry * Math.sin(a),
+      this.y + rx * Math.sin(a) + ry * Math.cos(a)
     ];
   }
 
-  addInputWire(wire) {
-    this.inputWires.push(wire);
-  }
-  setOutputWire(wire) {
-    this.outputWire = wire;
-  }
-
-  turnOutputOn() {
-    if (this.outputState === 'on') return;
-    this.outputState = 'on';
-    if (this.outputWire) this.outputWire.turnOn();
-  }
-
-  turnOutputOff() {
-    if (this.outputState === 'off') return;
-    this.outputState = 'off';
-    if (this.outputWire) this.outputWire.turnOff();
+  pinPos(pinNum) {
+    return this.absPos(...this.pinPositions[pinNum]);
   }
 }

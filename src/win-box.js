@@ -1,21 +1,25 @@
-class WinBox {
-  constructor(g) {
-    g.append('rect').attrs({
+class WinBox extends Gate {
+  constructor(drawing, id, position, orientation) {
+    super(drawing, id, position, orientation);
+    this.g.append('rect').attrs({
       x: -40,
       y: -15,
       width: 80,
       height: 30,
       fill: 'none',
-      stroke: 'yellow',
+      stroke: this.color,
       'stroke-width': 2,
     });
   }
-  pinPos(pinNum){
+  get color() {
+    return 'yellow';
+  }
+  get pinPositions(){
     return [
       [0, -15],
       [0, 15],
       [-40, 0],
       [40, 0],
-    ][pinNum];
+    ];
   }
 }

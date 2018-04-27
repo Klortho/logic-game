@@ -1,40 +1,46 @@
 class Wire {
   constructor(drawing, from, to, waypoints) {
     const [fromGate, fromPin] = from;
+    const [toGate, toPin] = to;
 
-    const startPos = fromGate.outputPos();
-    fromGate.setOutputWire(this)
-    this.toGate = toGate;
-    const endPos = toGate.inputPos(inputNum);
+
+    const startPos = fromGate.pinPos(fromPin);
+    const endPos = toGate.pinPos(toPin);
+
     var x = startPos[0];
     var y = startPos[1];
     const dx = endPos[0] - startPos[0];
     const dy = endPos[1] - startPos[1];
     const wayP = [];
-    for (var i = 0; i < waypoints.length; i++){
-      if (waypoints[i][0] == "h"){
-        x += dx * waypoints[i][1];
+    for (var i = 0; i < waypoints.length; i++) {
+      const [cmd, val] = waypoints[i];
+      if (cmd === 'h') {
+        x += dx * val;
       }
-      else if (waypoints[i][0] == "v"){
-        y += dy * waypoints[i][1];
+      else if (cmd === 'v') {
+        y += dy * val;
+      }
+      else if (cmd === 'H') {
+        x += val;
+      }
+      else if (cmd === 'V') {
+        y += val;
       }
       else {
-        x = waypoints[i][0];
-        y = waypoints[i][1];
+        x = cmd;
+        y = val;
       }
       wayP.push([x,y]);
     }
     const points = [startPos, ...wayP, endPos];
     this.points = points;
+    console.log('points: ', points);
     this.wire = drawing.append('polyline').attrs({
       points,
       fill: 'none',
       stroke: 'blue',
-      'stroke-width': 3,
+      'stroke-width': 2,
     });
-
-    this.state = 'off';
-    this.timerId = null;
   }
 
   // This creates one dot that will slide down the wire

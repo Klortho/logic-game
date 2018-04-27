@@ -1,6 +1,8 @@
-class OrGate {
-  constructor(g) {
-    g.append('path').attrs({
+class OrGate extends Gate{
+  constructor(drawing, id, position, orientation) {
+    super(drawing, id, position, orientation);
+
+    this.g.append('path').attrs({
       d: ['M', -44, -30,
           'h', 24,
           'c', 25, 0, 43, 20, 47.5, 30,
@@ -8,15 +10,21 @@ class OrGate {
           'h', -24,
           'a', 60, 60, 0, 0, 0, 0, -60].join(' '),
       fill: 'none',
-      stroke: 'orange',
+      stroke: this.color,
       'stroke-width': 2,
     });
   }
-  pinPos(pinNum) {
+  get color() {
+    return 'orange';
+  }
+  get labelPos() {
+    return [-10, 0];
+  }
+  get pinPositions() {
     return [
-      [-42, -15],
-      [-42, 15],
-      [32.5, 0],
-    ][pinNum];
+      [-38, -15],
+      [-38, 15],
+      [28, 0],
+    ];
   }
 }

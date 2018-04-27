@@ -1,36 +1,37 @@
-class Switch {
-  constructor(g) {
+class Switch extends Gate {
+  constructor(drawing, id, position, orientation) {
+    super(drawing, id, position, orientation);
 
-    const rect = g.append('rect').attrs({
+    const rect = this.g.append('rect').attrs({
       x: -25,
       y: -10,
       width: 50,
       height: 20,
       fill: 'none',
-      stroke: 'grey',
+      stroke: this.color,
       'stroke-width': 2,
       'pointer-events': 'visible'
     });
     const pinCircle = cx => {
-      g.append('circle').attrs({
+      this.g.append('circle').attrs({
         r: 4,
         cx,
         cy: 0,
         fill: 'white',
-        stroke: 'grey',
+        stroke: this.color,
         'stroke-width': 2,
         'pointer-events': 'none'
       });
     };
     pinCircle(-12);
     pinCircle(12);
-    this.path = g.append('path').attrs({
+    this.path = this.g.append('path').attrs({
       fill: 'none',
-      stroke: 'grey',
+      stroke: this.color,
       'stroke-width': 2,
       'pointer-events': 'visible'
     });
-    this.jumper = g.append('polyline').attrs({
+    this.jumper = this.g.append('polyline').attrs({
       points: [[-12, 0], [12, 0]],
       fill: 'none',
       stroke: 'blue',
@@ -46,6 +47,12 @@ class Switch {
     // The switch always starts in the "open" state
     this.isOpen = false;
     return this.open();
+  }
+  get color() {
+    return 'grey';
+  }
+  get labelPos() {
+    return [0, 20];
   }
 
   drawToggler() {
@@ -81,7 +88,10 @@ class Switch {
     return this;
   }
 
-  pinPos(pinNum) {
-    return [pinNum === 0 ? -12 : 12, 0];
+  get pinPositions() {
+    return [
+      [-12, 0],
+      [12, 0],
+    ];
   }
 }
