@@ -15,6 +15,7 @@ class Gate {
     ].join(' '));
 
     const labelXY = this.absPos(...this.labelPos);
+  /*
     this.label = drawing.append('text').attrs({
       x: labelXY[0],
       y: labelXY[1],
@@ -25,6 +26,7 @@ class Gate {
       'alignment-baseline': 'middle',
     })
     .text(id);
+  */
   }
   // default color
   get color() {

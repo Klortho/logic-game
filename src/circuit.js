@@ -51,11 +51,15 @@ const Circuit = (drawing, spec) => {
 
   const wires = spec.wires.map(makeWire);
 
-  gates.forEach(gate => gate.update());
+
+  const start = () => {
+    gates.forEach(gate => gate.update());
+  };
 
   return {
     gates,
     gatesById,
     wires,
+    start,
   };
 };

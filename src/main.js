@@ -68,3 +68,8 @@ const circuit = Circuit(drawing, {
     ['and1-2', 'win-2'],
   ],
 });
+
+document.addEventListener('keypress', evt => {
+  evt.preventDefault();
+  if (evt.key === ' ') circuit.start();
+});
