@@ -10,6 +10,7 @@ class WinBox extends Gate {
       stroke: this.color,
       'stroke-width': 2,
     });
+    this.initPins(4, 4);
   }
   get color() {
     return 'yellow';
@@ -21,5 +22,7 @@ class WinBox extends Gate {
       [-40, 0],
       [40, 0],
     ];
+  }
+  update() {
   }
 }

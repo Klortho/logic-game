@@ -25,14 +25,12 @@ const Circuit = (drawing, spec) => {
     return gate;
   };
 
-  // This returns [gate, pinNum] from a spec. If the spec doesn't
-  // include a pin number, then 0 will be used.
+  // This returns [gate, pinNum] from a spec.
   const gateAndPinNum = spec => {
     const [id, pin] = spec.split('-');
     const gate = gatesById[id];
     if (!(id in gatesById)) throw Error(`Bad gate/pin spec "${spec}"`);
-    const pinNum = typeof pin === 'undefined' ? 0 : +pin;
-    return [gate, pinNum];
+    return [gate, +pin];
   };
 
   const makeWire = spec => {
@@ -52,4 +50,12 @@ const Circuit = (drawing, spec) => {
   })
 
   const wires = spec.wires.map(makeWire);
+
+  gates.forEach(gate => gate.update());
+
+  return {
+    gates,
+    gatesById,
+    wires,
+  };
 };

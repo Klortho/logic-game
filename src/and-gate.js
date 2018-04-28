@@ -11,6 +11,7 @@ class AndGate extends Gate {
       stroke: this.color,
       'stroke-width': 2,
     });
+    this.initPins(3, 2);
   }
   get color() {
     return 'green';
@@ -21,5 +22,8 @@ class AndGate extends Gate {
       [-28, 15],
       [28, 0],
     ];
+  }
+  update() {
+    this.setGateOutputState(2, this.pins[0].state && this.pins[1].state);
   }
 }

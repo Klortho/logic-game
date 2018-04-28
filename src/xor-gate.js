@@ -19,6 +19,7 @@ class XorGate extends Gate {
       stroke: this.color,
       'stroke-width': 2
     });
+    this.initPins(3, 2);
   }
   get color() {
     return 'purple';
@@ -32,5 +33,10 @@ class XorGate extends Gate {
       [-38, 15],
       [28, 0],
     ];
+  }
+  update() {
+    const in0 = this.pins[0].state;
+    const in1 = this.pins[1].state;
+    this.setGateOutputState(2, in0 && !in1 || !in0 && in1);
   }
 }

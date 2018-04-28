@@ -10,6 +10,7 @@ class Input extends Gate {
       'stroke-width': 1,
       'pointer-events': 'none',
     });
+    this.initPins(1, 0);
   }
   get color() {
     return 'blue';
@@ -19,5 +20,8 @@ class Input extends Gate {
   }
   get pinPositions() {
     return [[0, 0]];
+  }
+  update() {
+    this.setGateOutputOn(0);
   }
 }

@@ -25,11 +25,7 @@ class Gate {
       'alignment-baseline': 'middle',
     })
     .text(id);
-
-    this.inputs = [];
-    this.outputs = [];
   }
-
   // default color
   get color() {
     return 'black';
@@ -38,7 +34,6 @@ class Gate {
   get labelPos() {
     return [0, 0];
   }
-
   // Gets the angle in radians.
   get aRads() {
     return this.angle * Math.PI / 180;
@@ -49,7 +44,6 @@ class Gate {
   get y() {
     return this.position[1];
   }
-
   // Returns the absolute position of a point on the gate, given the
   // point's coordinates relative to the center
   absPos(rx, ry) {
@@ -59,8 +53,62 @@ class Gate {
       this.y + rx * Math.sin(a) + ry * Math.cos(a)
     ];
   }
-
   pinPos(pinNum) {
     return this.absPos(...this.pinPositions[pinNum]);
+  }
+  initPins(total, numInputs) {
+    this.pins = [];
+    for (var i = 0; i < total; ++i) {
+      this.pins[i] = {
+        type: i < numInputs ? 'in' : 'out',
+        state: false,
+        wire: null,
+        timer: null,
+      };
+    }
+  }
+  connect(pinNum, wire) {
+    if (this.pins[pinNum].wire !== null)
+      throw Error('Can\'t connect two wires to the same pin!');
+    this.pins[pinNum].wire = wire;
+  }
+
+  clearInputTimer(pinNum) {
+    const inPin = this.pins[pinNum];
+    if (inPin.timer) clearTimeout(inPin.timer);
+    inPin.timer = null;
+  }
+  setGateInputOff(pinNum) {
+    this.clearInputTimer(pinNum);
+    const inPin = this.pins[pinNum];
+    inPin.state = false;
+    this.update();
+  }
+  // This is called by a Wire object
+  setGateInputOn(pinNum) {
+    this.clearInputTimer(pinNum);
+    const inPin = this.pins[pinNum];
+    inPin.state = true;
+    inPin.timer = setTimeout(() => {
+      this.setGateInputOff(pinNum);
+    }, Wire.duration * 1.1);
+    this.update();
+  }
+
+  // These are called from this gate's update() method
+  setGateOutputOff(pinNum) {
+    const outPin = this.pins[pinNum];
+    outPin.state = false;
+    if (outPin.wire === null) return;
+    outPin.wire.setWireOff();
+  }
+  setGateOutputOn(pinNum) {
+    const outPin = this.pins[pinNum];
+    outPin.state = true;
+    if (outPin.wire === null) return;
+    outPin.wire.setWireOn();
+  }
+  setGateOutputState(pinNum, state) {
+    this['setGateOutput' + (state ? 'On' : 'Off')](pinNum);
   }
 }

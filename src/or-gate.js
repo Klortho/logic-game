@@ -1,7 +1,6 @@
 class OrGate extends Gate{
   constructor(drawing, id, position, orientation) {
     super(drawing, id, position, orientation);
-
     this.g.append('path').attrs({
       d: ['M', -44, -30,
           'h', 24,
@@ -13,6 +12,7 @@ class OrGate extends Gate{
       stroke: this.color,
       'stroke-width': 2,
     });
+    this.initPins(3, 2);
   }
   get color() {
     return 'orange';
@@ -26,5 +26,8 @@ class OrGate extends Gate{
       [-38, 15],
       [28, 0],
     ];
+  }
+  update() {
+    this.setGateOutputState(2, this.pins[0].state || this.pins[1].state);
   }
 }

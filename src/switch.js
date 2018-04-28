@@ -1,7 +1,6 @@
 class Switch extends Gate {
   constructor(drawing, id, position, orientation) {
     super(drawing, id, position, orientation);
-
     const rect = this.g.append('rect').attrs({
       x: -25,
       y: -10,
@@ -34,7 +33,7 @@ class Switch extends Gate {
     this.jumper = this.g.append('polyline').attrs({
       points: [[-12, 0], [12, 0]],
       fill: 'none',
-      stroke: 'blue',
+      stroke: this.color,
       'stroke-width': 2,
       opacity: 0,
       'pointer-events': 'none'
@@ -44,9 +43,13 @@ class Switch extends Gate {
     rect.node().addEventListener('click', handleClick);
     this.path.node().addEventListener('click', handleClick);
 
+    this.initPins(2, 1);
+
     // The switch always starts in the "open" state
     this.isOpen = false;
-    return this.open();
+    this.open();
+
+    return this;
   }
   get color() {
     return 'grey';
@@ -78,6 +81,7 @@ class Switch extends Gate {
     this.isOpen = true;
     this.drawToggler();
     this.jumper.attr('opacity', 0);
+    this.update();
     return this;
   }
   close() {
@@ -93,5 +97,8 @@ class Switch extends Gate {
       [-12, 0],
       [12, 0],
     ];
+  }
+  update() {
+    this.setGateOutputState(1, !this.isOpen && this.pins[0].state);
   }
 }

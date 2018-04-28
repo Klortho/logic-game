@@ -9,6 +9,7 @@ class Junction extends Gate {
       stroke: 'none',
       'pointer-events': 'none',
     });
+    this.initPins(3, 1);
   }
   get color() {
     return 'blue';
@@ -17,6 +18,15 @@ class Junction extends Gate {
     return [-12, 12];
   }
   get pinPositions() {
-    return [[0, 0]];
+    return [
+      [0, 0],
+      [0, 0],
+      [0, 0],
+    ];
+  }
+  update() {
+    for (const pinNum of [1, 2]) {
+      this.setGateOutputState(pinNum, this.pins[0].state);      
+    }
   }
 }

@@ -15,6 +15,7 @@ class NotGate extends Gate {
       'stroke-width': 2,
       stroke: this.color,
     });
+    this.initPins(2, 1);
   }
   get color() {
     return 'red';
@@ -27,5 +28,8 @@ class NotGate extends Gate {
       [-22, 0],
       [22, 0],
     ];
+  }
+  update() {
+    this.setGateOutputState(1, !this.pins[0].state);
   }
 }

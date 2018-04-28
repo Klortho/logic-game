@@ -2,7 +2,8 @@ class Wire {
   constructor(drawing, from, to, waypoints) {
     const [fromGate, fromPin] = from;
     const [toGate, toPin] = to;
-
+    fromGate.connect(fromPin, this);
+    toGate.connect(toPin, this);
 
     const startPos = fromGate.pinPos(fromPin);
     const endPos = toGate.pinPos(toPin);
@@ -33,13 +34,18 @@ class Wire {
       wayP.push([x,y]);
     }
     const points = [startPos, ...wayP, endPos];
-    this.points = points;
-    console.log('points: ', points);
-    this.wire = drawing.append('polyline').attrs({
+    this.path = drawing.append('polyline').attrs({
       points,
       fill: 'none',
       stroke: 'blue',
       'stroke-width': 2,
+    });
+    Object.assign(this, {
+      fromGate, fromPin,
+      toGate, toPin,
+      points,
+      state: false,
+      timerId: null,
     });
   }
 
@@ -61,9 +67,9 @@ class Wire {
       var xd = p1[0] - p0[0];
       var yd = p1[1] - p0[1];
       var dist = Math.sqrt(xd * xd + yd * yd);
-      var duration = dist * 5;
+      var dur = dist * Wire.duration / 50;
       selection = selection.transition()
-        .duration(duration)
+        .duration(dur)
         .ease(d3.easeLinear)
         .attrs({
           cx: points[nextP][0],
@@ -71,17 +77,25 @@ class Wire {
         });
     }
     selection.remove();
+    selection.on('end', evt => {
+      this.toGate.setGateInputOn(this.toPin);
+    });
   }
 
-  turnOn() {
-    if (this.state === 'on') return;
-    this.timerId = setInterval(() => this.spit(), 500);
-    this.state = 'on';
+  setWireState(state) {
+    state ? this.setWireOn() : this.setWireOff();
   }
-  turnOff() {
-    if (this.state === 'off') return;
+  setWireOn() {
+    if (this.state) return;
+    this.spit();
+    this.timerId = setInterval(() => this.spit(), Wire.duration);
+    this.state = true;
+  }
+  setWireOff() {
+    if (!this.state) return;
     clearInterval(this.timerId);
     this.timerId = null;
-    this.state === 'off';
+    this.state = false;
   }
 }
+Wire.duration = 1000;
